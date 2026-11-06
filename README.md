@@ -1,7 +1,8 @@
 ### Escuela Colombiana de Ingeniería
 ### Arquitecturas de Software - ARSW
 
-## Escalamiento en Azure con Maquinas Virtuales, Sacale Sets y Service Plans
+## Video escalamiento en Azure con Maquinas Virtuales, Sacale Sets y Service Plans
+### DAR CLICK A LA IMÁGEN!!!!
 
 [![Demostración del laboratorio paso a paso](https://img.youtube.com/vi/COmMJIr0_eA/maxresdefault.jpg)](https://youtu.be/COmMJIr0_eA)
 
