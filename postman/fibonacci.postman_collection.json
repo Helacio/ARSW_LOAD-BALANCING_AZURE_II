@@ -1,0 +1,43 @@
+{
+  "info": {
+    "name": "ARSW Fibonacci - Concurrencia",
+    "description": "Colección para probar la Function de Fibonacci con 10 peticiones concurrentes usando Newman.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://fibonacci-lab-hs2026.azurewebsites.net" },
+    { "key": "nth", "value": "1000000" }
+  ],
+  "item": [
+    {
+      "name": "Fibonacci",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Devuelve un numero', function () { pm.expect(pm.response.text()).to.match(/^[0-9]+$/); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"nth\": {{nth}}}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/Fibonacci",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "Fibonacci"]
+        }
+      }
+    }
+  ]
+}

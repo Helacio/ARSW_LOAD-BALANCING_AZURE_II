@@ -26,7 +26,6 @@
 			"type": "shell",
 			"label": "npm prune",
 			"command": "npm prune --production",
-			"dependsOn": "func: extensions install",
 			"problemMatcher": [],
 			"options": {
 				"cwd": "${workspaceFolder}/FunctionProject"
