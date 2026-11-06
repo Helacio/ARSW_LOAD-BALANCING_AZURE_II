@@ -3,6 +3,8 @@
 
 ## Escalamiento en Azure con Maquinas Virtuales, Sacale Sets y Service Plans
 
+[![Demostración del laboratorio paso a paso](https://img.youtube.com/vi/COmMJIr0_eA/maxresdefault.jpg)](https://youtu.be/COmMJIr0_eA)
+
 ### Dependencias
 * Cree una cuenta gratuita dentro de Azure. Para hacerlo puede guiarse de esta [documentación](https://azure.microsoft.com/es-es/free/students/). Al hacerlo usted contará con $100 USD para gastar durante 12 meses.
 Antes de iniciar con el laboratorio, revise la siguiente documentación sobre las [Azure Functions](https://www.c-sharpcorner.com/article/an-overview-of-azure-functions/)
@@ -42,11 +44,36 @@ Cuando un conjunto de usuarios consulta un enésimo número (superior a 1000000)
 
 **Preguntas**
 
-* ¿Qué es un Azure Function?
-* ¿Qué es serverless?
-* ¿Qué es el runtime y que implica seleccionarlo al momento de crear el Function App?
-* ¿Por qué es necesario crear un Storage Account de la mano de un Function App?
-* ¿Cuáles son los tipos de planes para un Function App?, ¿En qué se diferencias?, mencione ventajas y desventajas de cada uno de ellos.
-* ¿Por qué la memoization falla o no funciona de forma correcta?
-* ¿Cómo funciona el sistema de facturación de las Function App?
-* Informe
+* **¿Qué es un Azure Function?**
+
+  Es un pequeño fragmento de código que se ejecuta en la nube de Azure sin que uno tenga que administrar servidores. Se ejecuta cuando ocurre un evento (una petición HTTP, un temporizador, un mensaje en una cola, etc.) y Azure se encarga de escalarlo automáticamente. En este laboratorio, la función de Fibonacci recibe un número por HTTP y devuelve su valor en la secuencia.
+
+* **¿Qué es serverless?**
+
+  Es un modelo de computación en la nube en el que el proveedor (Azure) administra toda la infraestructura: servidores, escalado, sistema operativo y parches. El desarrollador solo se preocupa por escribir y subir el código, y paga únicamente por el tiempo de ejecución. Para el desarrollador es "sin servidores", porque no aprovisiona ni gestiona máquinas.
+
+* **¿Qué es el runtime y que implica seleccionarlo al momento de crear el Function App?**
+
+  El runtime es el lenguaje y la versión con la que se ejecuta el código, por ejemplo Node.js (18, 20, 22...), Python, .NET, Java, etc. Al crear el Function App hay que elegirlo, y eso implica que el código debe estar escrito para ese lenguaje/versión y que la plataforma instalará ese entorno para correrlo. Si se elige mal (por ejemplo una versión vieja o fuera de soporte), la función no arranca o falla, como nos pasó al principio con versiones de Node ya obsoletas.
+
+* **¿Por qué es necesario crear un Storage Account de la mano de un Function App?**
+
+  Porque el host de Functions la usa para guardar información interna: los archivos de la aplicación, el estado y los "leases" del host, las llaves, los logs y el estado de los triggers (temporizadores, colas, etc.). En los planes modernos también se usa para almacenar el paquete de despliegue. Sin una cuenta de almacenamiento el host no puede funcionar ni coordinar la ejecución de las funciones.
+
+* **¿Cuáles son los tipos de planes para un Function App?, ¿En qué se diferencian?, mencione ventajas y desventajas de cada uno de ellos.**
+
+  - **Consumption (clásico):** escala automáticamente, incluso a cero, y se paga por ejecución. *Ventaja:* muy económico y sin administración. *Desventaja:* tiene cold starts y límites de tiempo; además Azure lo está retirando a favor de Flex.
+  - **Flex Consumption:** el plan serverless más nuevo y recomendado. *Ventaja:* escalado rápido, menos cold start, instancias más grandes y soporte de red privada. *Desventaja:* es más nuevo y tiene algunas limitaciones de configuración/versiones.
+  - **Premium:** mantiene instancias pre-calentadas. *Ventaja:* sin cold start, más CPU/memoria y conexión a VNet. *Desventaja:* es más costoso porque se paga por las instancias.
+  - **App Service Plan (dedicado):** usa un plan de App Service normal. *Ventaja:* control total y rendimiento predecible. *Desventaja:* se paga siempre, aunque no haya tráfico.
+  - **Container Apps / Kubernetes:** para ejecutar las funciones en contenedores. *Ventaja:* mucho control y portabilidad. *Desventaja:* más complejo de administrar.
+
+* **¿Por qué la memoization falla o no funciona de forma correcta?**
+
+  Porque la memoization guarda los resultados en la memoria del proceso (una variable o un Map), y en serverless esa memoria es efímera y no se comparte. Cuando la instancia se recicla por inactividad (cold start), el caché se pierde y hay que volver a calcular. Además, si la aplicación escala a varias instancias, cada una tiene su propio caché y no se sincronizan. Por eso funciona mientras la instancia está "caliente", pero no es una estrategia confiable; para eso se usa un caché externo como Redis.
+
+* **¿Cómo funciona el sistema de facturación de las Function App?**
+
+  Depende del plan. En **Consumption/Flex** se factura por consumo: número de ejecuciones más el tiempo de ejecución multiplicado por la memoria usada (GB-s), y también se cobran los servicios asociados (Storage, Application Insights). Hay una cuota gratuita mensual (por ejemplo, 1 millón de ejecuciones y 400.000 GB-s en Consumption). En **Premium** o **App Service Plan** se paga por las instancias o la capacidad reservada, aunque no haya tráfico. En resumen: se paga por lo que se consume o por la capacidad reservada, según el plan.
+
+**Informe**
